@@ -1,38 +1,16 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
 import { Form, Field } from 'react-final-form';
-import { TextField, Select } from 'final-form-material-ui';
+import { TextField, Select, Input } from 'final-form-material-ui';
 import { Paper, Grid, Button, CssBaseline, MenuItem } from '@material-ui/core';
 import StepContent from '@material-ui/core/StepContent';
 import StepLabel from '@material-ui/core/StepLabel';
 import Step from '@material-ui/core/Step';
 import Stepper from '@material-ui/core/Stepper';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import InputMask from 'react-input-mask';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      width: 200,
-    },
-  },
-  button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(1),
-  },
-  actionsContainer: {
-    marginBottom: theme.spacing(2),
-  },
-  resetContainer: {
-    padding: theme.spacing(3),
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-}));
+
 const onSubmit = async values => {
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   await sleep(300);
@@ -61,22 +39,6 @@ function GetStepContent(step) {
   const [education, setEducation] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [age, setAge] =  useState('');
-  const [open, setOpen] = useState(false);
-
-  const classes = useStyles();
-
-  const handleChangeAge = event => {
-    setAge(event.target.value);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const handleChangeName = input => e => {
     setFirstname({ [input]: e.target.value})
@@ -115,32 +77,32 @@ function GetStepContent(step) {
               <Grid container alignItems="flex-start" spacing={2}>
                 
               <Grid item xs={6}>
+           
                   <Field
-                    fullWidth
-                    required
-                    name="firstName"
-                    component={TextField}
-                    type="text"
-                    label="First Name"
-                    onChange={handleChangeName('firstName')}
-                    defaultValue={values.firstName}
+                  fullWidth
+                  required
+                  name="firstName"
+                  component={Input}
+                  type="text"
+                  label="First Name"
+                  onChange={handleChangeName('firstName')}
+                  defaultValue={values.firstName}
                   />
+                
                 </Grid>
                 <Grid item xs={6}>
                   <Field
                     fullWidth
                     required
                     name="lastName"
-                    component={TextField}
-                    type="text"
+                    component={Input}
+                    type="input"
                     label="Last Name"
                     onChange={handleChangeLastname('lastName')}
-                defaultValue={values.lastName}
+                    defaultValue={values.lastName}
                   />   
                 
                 </Grid>
-        
-
 
                 <Grid item xs={12}>
                   <Field
@@ -149,7 +111,9 @@ function GetStepContent(step) {
                     component={Select}
                     label="Select education"
                     formControlProps={{ fullWidth: true }}
-                  >
+                    onChange={handleChangeEducation('Education')}
+                    defaultValue={values.Education}
+                    >
                     <MenuItem value="Podstawowe">Podstawowe</MenuItem>
                     <MenuItem value="Średnie">Średnie</MenuItem>
                     <MenuItem value="Wyższe">
@@ -181,35 +145,32 @@ function GetStepContent(step) {
                   <Grid item xs={12}>
                     <Field
                       name="email"
+                      validators={['required', 'isEmail']}
                       fullWidth
                       required
                       component={TextField}
                       type="email"
                       label="Email"
+                      onChange={handleChangeEmail('Email')}
+                      defaultValue={values.Email}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <Field
-                      name="email"
-                      fullWidth
-                      required
-                      component={TextField}
-                      type="email"
-                      label="Email"
-                    />
-                  </Grid>
-  
-                  <Grid item xs={12}>
-                    <Field
-                      fullWidth
-                      name="notes"
-                      component={TextField}
-                      multiline
-                      label="Notes"
-                    />
-                  </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                    name="phone"
+                    fullWidth
+                    required
+                    component={TextField}
+                    label="Phone"
+                    onChange={handleChangePhone('Phone')}   
+
+                    >
+                    <InputMask  defaultValue={values.Phone}   mask="999 999 999" maskChar=" " />
+                    </Field>
                   
+                  </Grid>
+ 
+                  <Grid item style={{ marginTop: 16 }}>                  
                  
                   </Grid>
                 </Grid>
@@ -273,10 +234,7 @@ function App() {
         <Step key={label}>
           <StepLabel>{label}</StepLabel>
           <StepContent>
-          <Typography>{GetStepContent(index)}</Typography>
-    
-
-          
+          <Typography component={'span'}>{GetStepContent(index)}</Typography>
               <Button
                 variant="contained"
                 color="primary"
